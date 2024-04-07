@@ -1,0 +1,14 @@
+{% for title, dic in cascaded.items %}
+  {% if title.2 %}
+    {{ level }}{{ parent_model_name }} - {{ title.0 }} Relationship: {{ title.1 }}<br>
+  {% else %}
+    {{ level }}{{ title.0 }}: {{ title.1 }}<br>
+  {% endif %}
+  {% if dic %}
+    {% include 'recur.html' with parent_model_name=title.0 cascaded=dic level='&nbsp&nbsp' %}
+    <br>
+  {% endif %}
+{% endfor %}
+
+
+
