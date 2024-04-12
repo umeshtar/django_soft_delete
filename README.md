@@ -9,5 +9,5 @@ An alternative to the default Django behavior of permanently removing records
 Refer data_structure.txt file
 
 **Testing**  
-visit "/delete/db_migration/" to create test records
+visit "/delete/db_migration/" to create test records  
 Review urls.py and views.py for more info
