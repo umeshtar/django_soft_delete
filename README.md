@@ -7,3 +7,6 @@ An alternative to the default Django behavior of permanently removing records
 
 **Data Structure**
 Refer data_structure.txt file
+
+**Testing**
+visit "/delete/db_migration/" to create test records
