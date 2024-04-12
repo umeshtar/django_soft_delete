@@ -27,7 +27,7 @@
     <p><strong>Objects: </strong></p>
     {% include 'recur.html' with parent_model_name='' cascaded=data level='' %}
 
-    <button> <a href="{% url 'delete' %}" > Delete </a> </button>
+    <button> <a href="{% url 'confirm_delete' %}" > Delete </a> </button>
 {% else %}
     <p>Something Went Wrong</p>
 {% endif %}
