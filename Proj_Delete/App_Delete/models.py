@@ -33,7 +33,7 @@ class Model1(MyModel):
 
 class Model2(MyModel):
     name = models.CharField(max_length=100)
-    model1_id = models.ForeignKey('Model1', on_delete=models.CASCADE, null=True, blank=True)
+    model1_id = models.ForeignKey('Model1', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -41,7 +41,7 @@ class Model2(MyModel):
 
 class Model3(MyModel):
     name = models.CharField(max_length=100)
-    model2_id = models.ManyToManyField('Model2', blank=True)
+    model1_id = models.ForeignKey('Model1', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -49,8 +49,7 @@ class Model3(MyModel):
 
 class Model4(MyModel):
     name = models.CharField(max_length=100)
-    model3_id = models.ManyToManyField('Model3', blank=True)
-    model3_id2 = models.ForeignKey('Model3', on_delete=models.CASCADE, related_name='model4s_by_fk', null=True, blank=True)
+    model1_id = models.ForeignKey('Model1', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -58,25 +57,18 @@ class Model4(MyModel):
 
 class Model5(MyModel):
     name = models.CharField(max_length=100)
-    model4_id = models.ForeignKey('Model4', on_delete=models.PROTECT, null=True, blank=True)
+    model1_id = models.ManyToManyField('Model1', blank=True)
+    model2_id = models.ForeignKey('Model2', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 
-class Model6(MyModel):
-    model5_id = models.OneToOneField('Model5', on_delete=models.CASCADE, primary_key=True)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 
 
-class Model7(MyModel):
-    model6_id = models.OneToOneField('Model6', on_delete=models.CASCADE, primary_key=True)
-    name = models.CharField(max_length=100)
 
-    def __str__(self):
-        return self.name
+
+
+
 
 

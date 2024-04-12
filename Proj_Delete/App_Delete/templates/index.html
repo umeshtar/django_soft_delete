@@ -5,7 +5,10 @@
     <title>Title</title>
 </head>
 <body>
-{% if msg_type == 'protect' %}
+{% if msg_type == 'Success' %}
+    <p> Records Deleted Successfully </p>
+
+{% elif msg_type == 'protect' %}
     <p>Cannot delete {{ model_name }}s</p>
     <p> Deleting the selected {{ model_name }}s would require deleting the following protected related objects: </p>
     {% for k, v in data.items %}
@@ -23,6 +26,8 @@
     <br>
     <p><strong>Objects: </strong></p>
     {% include 'recur.html' with parent_model_name='' cascaded=data level='' %}
+
+    <button> <a href="{% url 'delete' %}" > Delete </a> </button>
 {% else %}
     <p>Something Went Wrong</p>
 {% endif %}

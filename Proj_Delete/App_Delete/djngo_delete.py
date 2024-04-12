@@ -1,3 +1,4 @@
+
 class DjangoDelete:
 
     def __init__(self, model_class, pks):
@@ -21,13 +22,16 @@ class DjangoDelete:
         return obj._meta.get_fields()
 
     def check_delete(self):
+        self.protect_recur = []
         self.__get_protected(self.objs)
         self.__get_protected_msg()
         if not self.protect:
+            self.cascade_recur = []
             self.cascade = self.__get_cascaded(self.model_name, self.objs)
             self.__get_cascaded_msg('', self.cascade, 0)
 
     def delete(self):
+        self.protect_recur = []
         self.__get_protected(self.objs)
         if not self.protect:
             self.cascade_recur = []
@@ -101,10 +105,5 @@ class DjangoDelete:
                 print(" " * level + f"{model_name}: {inst_name}")
             if dic:
                 self.__get_cascaded_msg(model_name, dic, level + 2)
-
-
-
-
-
 
 

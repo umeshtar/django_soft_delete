@@ -25,35 +25,22 @@ class Model2Admin(Admin):
 
 @admin.register(Model3)
 class Model3Admin(Admin):
-    list_display = ['id', 'is_del', 'name', 'model2_ids']
-
-    @staticmethod
-    def model2_ids(obj):
-        return ', '.join([str(row) for row in obj.model2_id.all()])
+    list_display = ['id', 'is_del', 'name', 'model1_id']
 
 
 @admin.register(Model4)
 class Model4Admin(Admin):
-    list_display = ['id', 'is_del', 'name', 'model3_ids', 'model3_id2']
-
-    @staticmethod
-    def model3_ids(obj):
-        return ', '.join([str(row) for row in obj.model3_id.all()])
+    list_display = ['id', 'is_del', 'name', 'model1_id']
 
 
 @admin.register(Model5)
 class Model5Admin(Admin):
-    list_display = ['id', 'is_del', 'name', 'model4_id']
+    list_display = ['id', 'is_del', 'name', 'model2_id', 'model1_ids']
 
+    @staticmethod
+    def model1_ids(obj):
+        return ", ".join([str(item) for item in obj.model1_id.all()])
 
-@admin.register(Model6)
-class Model6Admin(Admin):
-    list_display = ['model5_id', 'is_del', 'name']
-
-
-@admin.register(Model7)
-class Model7Admin(Admin):
-    list_display = ['model6_id', 'is_del', 'name']
 
 
 
