@@ -1,5 +1,7 @@
+from django.db.models import ManyToOneRel, OneToOneRel, CASCADE, PROTECT, ManyToManyField, ManyToManyRel
 
-class DjangoDelete:
+
+class DjangoSoftDelete:
 
     def __init__(self, model_class, pks):
         self.model_name = self.get_model_name(model_class)
@@ -44,24 +46,25 @@ class DjangoDelete:
                 obj.is_del = True
                 obj.save()
                 for row in self.get_fields(obj):
-                    if type(row).__name__ in ['ManyToOneRel', 'OneToOneRel'] and row.on_delete.__name__ == 'CASCADE':
-                        related_objs = row.related_model.objects.filter(is_del=False, **{f'{row.field.name}': obj})
-                        self.__delete(related_objs)
+                    if isinstance(row, ManyToOneRel) or isinstance(row, OneToOneRel):
+                        if row.on_delete == CASCADE:
+                            related_objs = row.related_model.objects.filter(is_del=False, **{f'{row.field.name}': obj})
+                            self.__delete(related_objs)
 
     def __get_protected(self, objs):
         for obj in objs:
             if obj not in self.protect_recur:
                 self.protect_recur.append(obj)
                 for row in self.get_fields(obj):
-                    if type(row).__name__ in ['ManyToOneRel', 'OneToOneRel']:
-                        if row.on_delete.__name__ == 'PROTECT':
+                    if isinstance(row, ManyToOneRel) or isinstance(row, OneToOneRel):
+                        if row.on_delete == PROTECT:
                             related_model_name = self.get_model_name(row.related_model)
                             for inst in row.related_model.objects.filter(is_del=False, **{f'{row.field.name}': obj}):
                                 if related_model_name not in self.protect:
                                     self.protect[related_model_name] = [self.get_inst_name(inst)]
                                 elif inst not in self.protect[related_model_name]:
                                     self.protect[related_model_name].append(self.get_inst_name(inst))
-                        elif row.on_delete.__name__ == 'CASCADE':
+                        elif row.on_delete == CASCADE:
                             self.__get_protected(row.related_model.objects.filter(is_del=False, **{f'{row.field.name}': obj}))
 
     def __get_protected_msg(self):
@@ -80,16 +83,17 @@ class DjangoDelete:
                     self.summary[name] += 1
                 dic2 = dict()
                 for row in self.get_fields(obj):
-                    if type(row).__name__ in ['ManyToOneRel', 'OneToOneRel'] and row.on_delete.__name__ == 'CASCADE':
-                        related_model_name = self.get_model_name(row.related_model)
-                        related_objs = row.related_model.objects.filter(**{f'{row.field.name}': obj})
-                        dic2.update(self.__get_cascaded(related_model_name, related_objs))
-                    elif type(row).__name__ == 'ManyToManyField':
+                    if isinstance(row, ManyToOneRel) or isinstance(row, OneToOneRel):
+                        if row.on_delete == CASCADE:
+                            related_model_name = self.get_model_name(row.related_model)
+                            related_objs = row.related_model.objects.filter(**{f'{row.field.name}': obj})
+                            dic2.update(self.__get_cascaded(related_model_name, related_objs))
+                    elif isinstance(row, ManyToManyField):
                         related_model_name = self.get_model_name(row.related_model)
                         related_objs = getattr(obj, row.name).all()
                         for inst in related_objs:
                             dic2[(related_model_name, self.get_inst_name(inst), True)] = dict()
-                    elif type(row).__name__ == 'ManyToManyRel':
+                    elif isinstance(row, ManyToManyRel):
                         related_model_name = self.get_model_name(row.related_model)
                         related_objs = row.related_model.objects.filter(**{f'{row.field.name}': obj})
                         for inst in related_objs:

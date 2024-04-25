@@ -1,13 +1,13 @@
 from django.shortcuts import render
 
-from .djngo_delete import DjangoDelete
+from .djngo_delete import DjangoSoftDelete
 from .models import *
 
 
 # Create your views here.
 def check_delete_view(request):
     objs = Model1.objects.all().values_list('id', flat=True)
-    td = DjangoDelete(Model1, objs)
+    td = DjangoSoftDelete(Model1, objs)
     td.check_delete()
     if td.protect:
         msg = td.protect
@@ -29,7 +29,7 @@ def check_delete_view(request):
 
 def delete_view(request):
     objs = Model1.objects.all().values_list('id', flat=True)
-    td = DjangoDelete(Model1, objs)
+    td = DjangoSoftDelete(Model1, objs)
     td.delete()
     return render(request, 'index.html', {'msg_type': 'Success'})
 
