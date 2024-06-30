@@ -26,38 +26,135 @@ Model1: 4
     Model4: 43
     Model1 - Model5 Relationship: 51
 
-dic = {
-    (Model1, 1, False): {
-        (Model2, 21, False): {},
-        (Model2, 22, False): {
-            (Model5, 51, False): {
-                (Model1, 1, True): {},
-                (Model1, 2, True): {},
-                (Model1, 3, True): {},
-                (Model1, 4, True): {},
-            },
-            (Model5, 52, False): {},
-            (Model5, 53, False): {},
-            (Model5, 54, False): {},
-        },
-        (Model2, 23, False): {},
-        (Model3, 31, False): {},
-        (Model3, 32, False): {},
-        (Model5, 51, True): {},
-    },
-    (Model1, 2, False): {
-        (Model5, 51, True): {},
-    },
-    (Model1, 3): {
-        (Model5, 51, True): {},
-    },
-    (Model1, 4): {
-        (Model4, 41, False): {},
-        (Model4, 42, False): {},
-        (Model4, 43, False): {},
-        (Model5, 51, True): {},
-    },
-}
+lst = [
+  {
+    "model": "Model1",
+    "name": 1,
+    "children": [
+      {
+        "model": "Model2",
+        "name": 21,
+        "children": []
+      },
+      {
+        "model": "Model2",
+        "name": 22,
+        "children": [
+          {
+            "model": "Model5",
+            "name": 51,
+            "children": [
+              {
+                "model": "Model1",
+                "name": 1,
+                "relationship": true
+              },
+              {
+                "model": "Model1",
+                "name": 2,
+                "relationship": true
+              },
+              {
+                "model": "Model1",
+                "name": 3,
+                "relationship": true
+              },
+              {
+                "model": "Model1",
+                "name": 4,
+                "relationship": true
+              }
+            ]
+          },
+          {
+            "model": "Model5",
+            "name": 52,
+            "children": []
+          },
+          {
+            "model": "Model5",
+            "name": 53,
+            "children": []
+          },
+          {
+            "model": "Model5",
+            "name": 54,
+            "children": []
+          }
+        ]
+      },
+      {
+        "model": "Model2",
+        "name": 23,
+        "children": []
+      },
+      {
+        "model": "Model3",
+        "name": 31,
+        "children": []
+      },
+      {
+        "model": "Model3",
+        "name": 32,
+        "children": []
+      },
+      {
+        "model": "Model5",
+        "name": 51,
+        "relationship": true
+      }
+    ]
+  },
+  {
+    "model": "Model1",
+    "name": 2,
+    "children": [
+      {
+        "model": "Model5",
+        "name": 51,
+        "relationship": true
+      }
+    ]
+  },
+  {
+    "model": "Model1",
+    "name": 3,
+    "children": [
+      {
+        "model": "Model5",
+        "name": 51,
+        "relationship": true
+      }
+    ]
+  },
+  {
+    "model": "Model1",
+    "name": 4,
+    "children": [
+      {
+        "model": "Model4",
+        "name": 41,
+        "children": []
+      },
+      {
+        "model": "Model4",
+        "name": 42,
+        "children": []
+      },
+      {
+        "model": "Model4",
+        "name": 43,
+        "children": []
+      },
+      {
+        "model": "Model5",
+        "name": 51,
+        "relationship": true
+      }
+    ]
+  }
+]
+
 
 ======================================================
 Data Structure for Cascade Delete - END

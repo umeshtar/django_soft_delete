@@ -1,0 +1,12 @@
+* Modify Data Structure to json format - Done
+* Include all cases of on_delete (Implement in Future if required)
+1. SET_NULL
+2. SET_DEFAULT
+
+* check possibility for SoftDeleteModel, SoftDeleteManager
+* check possibility for override delete method
+* Check logic for delete on GitHub
+
+* Implement restore functionality with listing all data (Implement in Future if required)
+1. Undelete whole delete Batch
+2. Undelete Record and related objects

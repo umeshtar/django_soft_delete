@@ -7,7 +7,7 @@ class DjangoSoftDelete:
         self.model_name = self.get_model_name(model_class)
         self.objs = model_class.objects.filter(pk__in=pks)
 
-        self.protect, self.cascade = dict(), dict()
+        self.protect, self.cascade = dict(), []
         self.protect_recur, self.cascade_recur = [], []
         self.summary = dict()
 
@@ -72,7 +72,7 @@ class DjangoSoftDelete:
             print(f"{model_name}: {', '.join(objs)}")
 
     def __get_cascaded(self, model_name, objs):
-        dic = dict()
+        lst = []
         for obj in objs:
             if obj not in self.cascade_recur:
                 self.cascade_recur.append(obj)
@@ -81,33 +81,49 @@ class DjangoSoftDelete:
                     self.summary[name] = 1
                 else:
                     self.summary[name] += 1
-                dic2 = dict()
+                lst2 = []
                 for row in self.get_fields(obj):
                     if isinstance(row, ManyToOneRel) or isinstance(row, OneToOneRel):
                         if row.on_delete == CASCADE:
                             related_model_name = self.get_model_name(row.related_model)
                             related_objs = row.related_model.objects.filter(**{f'{row.field.name}': obj})
-                            dic2.update(self.__get_cascaded(related_model_name, related_objs))
+                            lst2.extend(self.__get_cascaded(related_model_name, related_objs))
                     elif isinstance(row, ManyToManyField):
                         related_model_name = self.get_model_name(row.related_model)
                         related_objs = getattr(obj, row.name).all()
                         for inst in related_objs:
-                            dic2[(related_model_name, self.get_inst_name(inst), True)] = dict()
+                            lst2.append({
+                                'model': related_model_name,
+                                'name': self.get_inst_name(inst),
+                                'relationship': True
+                            })
                     elif isinstance(row, ManyToManyRel):
                         related_model_name = self.get_model_name(row.related_model)
                         related_objs = row.related_model.objects.filter(**{f'{row.field.name}': obj})
                         for inst in related_objs:
-                            dic2[(related_model_name, self.get_inst_name(inst), True)] = dict()
-                dic[(model_name, self.get_inst_name(obj), False)] = dic2
-        return dic
+                            lst2.append({
+                                'model': related_model_name,
+                                'name': self.get_inst_name(inst),
+                                'relationship': True
+                            })
+                lst.append({
+                    'model': model_name,
+                    'name': self.get_inst_name(obj),
+                    'children': lst2
+                })
+        return lst
 
     def __get_cascaded_msg(self, parent_model_name, cascaded, level):
-        for (model_name, inst_name, is_related), dic in cascaded.items():
-            if is_related:
+        for dic in cascaded:
+            model_name = dic['model']
+            inst_name = dic['name']
+            is_related = dic.get('relationship', False)
+            children = dic.get('children', None)
+            if is_related is True:
                 print(" " * level + f"{parent_model_name}-{model_name} Relationship: {inst_name}")
             else:
                 print(" " * level + f"{model_name}: {inst_name}")
-            if dic:
-                self.__get_cascaded_msg(model_name, dic, level + 2)
+            if children:
+                self.__get_cascaded_msg(model_name, children, level + 2)
 
 
